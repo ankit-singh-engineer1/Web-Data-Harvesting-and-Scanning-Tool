@@ -1,62 +1,168 @@
-<div class="container">
-  <h2>Web Crawler Dashboard</h2>
+<div class="page">
+  <section aria-labelledby="scan-title">
+    <h1 id="scan-title" class="title">Map a website</h1>
+    <p class="lede">Crawl one domain, then review its page structure, DNS, WHOIS, robots.txt and open ports.</p>
 
-  <div class="input-group">
-    <input [(ngModel)]="url" placeholder="Enter website URL (e.g., https://google.com)" [disabled]="loading">
-    <div class="button-group">
-      <button (click)="startCrawl()" [disabled]="loading" class="start-btn">Start Scan</button>
-      <button (click)="stopCrawl()" [disabled]="!loading" class="stop-btn">Stop</button>
-      <button (click)="exportToCSV()" [disabled]="links?.length === 0" class="export-btn">Export CSV</button>
-    </div>
-  </div>
+    <form class="cmd" (submit)="$event.preventDefault(); start()" novalidate>
+      <label class="sr-only" for="target">Website address</label>
+      <input
+        id="target"
+        class="cmd__input"
+        type="url"
+        inputmode="url"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="https://example.com"
+        aria-describedby="target-help"
+        list="target-suggestions"
+        [value]="url()"
+        [disabled]="running()"
+        [attr.aria-invalid]="urlError() ? 'true' : null"
+        (input)="url.set($any($event.target).value)"
+      />
+      @if (running()) {
+        <button type="button" class="btn btn--stop" (click)="stop()">Stop scan</button>
+      } @else {
+        <button type="submit" class="btn btn--go">Start scan</button>
+      }
+    </form>
+    <datalist id="target-suggestions">
+      @for (s of suggestions(); track s.value) {
+        <option [value]="s.value" [label]="s.label"></option>
+      }
+    </datalist>
+    <p id="target-help" class="help" [class.help--error]="urlError()">
+      {{ urlError() ?? 'Stays on one domain and stops at 1,000 pages. Only scan sites you own or have permission to test.' }}
+    </p>
+  </section>
 
-  <div class="metrics" *ngIf="loading || (links?.length ?? 0) > 0">
-    <div class="metric-card">
-      <small>Queue</small>
-      <strong>{{queueCount}}</strong>
+  @if (error(); as message) {
+    <div class="alert" role="alert">
+      <p><strong>Scan failed.</strong> {{ message }}</p>
+      <button type="button" class="link" (click)="start()">Try again</button>
     </div>
-    <div class="metric-card">
-      <small>Crawled</small>
-      <strong>{{crawledCount}}</strong>
-    </div>
-    <div class="metric-card">
-      <small>Success</small>
-      <strong>{{successRate}}%</strong>
-    </div>
-  </div>
+  }
 
-  <div class="intel-section" *ngIf="loading || (links?.length ?? 0) > 0">
-    <div class="intel-header">
-      <h3>📡 Site Intelligence</h3>
-      <span class="badge" *ngIf="intel?.ip">{{intel.ip}}</span>
-    </div>
-    
-    <div class="intel-grid">
-      <div class="intel-box">
-        <label>Nmap Scan</label>
-        <pre>{{intel?.nmap}}</pre>
+  @if (phase() === 'idle') {
+    <section class="about" aria-labelledby="about-title">
+      <h2 id="about-title" class="sr-only">What a scan collects</h2>
+      <dl class="about__list">
+        <div>
+          <dt>Sitemap</dt>
+          <dd>Every page found, grouped by host and path so you can see how the site is organised.</dd>
+        </div>
+        <div>
+          <dt>Links</dt>
+          <dd>A searchable list of discovered URLs that you can export as CSV or JSON.</dd>
+        </div>
+        <div>
+          <dt>Network data</dt>
+          <dd>Resolved IP address, a fast port scan, the WHOIS record and robots.txt.</dd>
+        </div>
+      </dl>
+    </section>
+  } @else {
+    <section class="run" aria-label="Scan summary">
+      <header class="run__head">
+        <div class="run__id">
+          <p class="run__target">{{ target() }}</p>
+          <p class="run__state" [attr.data-phase]="phase()" role="status">
+            <span class="dot" aria-hidden="true"></span>{{ stageLabel() }}
+          </p>
+        </div>
+        <div class="run__actions">
+          <button type="button" class="btn btn--sm" [disabled]="!links().length" (click)="exportCsv()">Export CSV</button>
+          <button type="button" class="btn btn--sm" [disabled]="!links().length" (click)="exportJson()">Export JSON</button>
+        </div>
+      </header>
+
+      <div class="bar" role="progressbar" aria-label="Crawl progress" aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="status().success_rate">
+        <span class="bar__fill" [style.width.%]="status().success_rate"></span>
       </div>
-      <div class="intel-box">
-        <label>Robots.txt</label>
-        <pre>{{intel?.robots}}</pre>
-      </div>
-      <div class="intel-box full-width">
-        <label>WHOIS Record</label>
-        <pre>{{intel?.whois}}</pre>
-      </div>
-    </div>
-  </div>
 
-  <div class="results-section" *ngIf="(links?.length ?? 0) > 0">
-    <h3>Discovered Links ({{links.length}})</h3>
-    <ul class="link-list">
-      <li *ngFor="let link of links">
-        {{link}}
-      </li>
-    </ul>
-  </div>
+      <dl class="stats">
+        <div>
+          <dt>Pages crawled</dt>
+          <dd>{{ status().crawled_count }}</dd>
+        </div>
+        <div>
+          <dt>In queue</dt>
+          <dd>{{ status().queue_count }}</dd>
+        </div>
+        <div>
+          <dt>Progress</dt>
+          <dd>{{ status().success_rate }}%</dd>
+        </div>
+        <div>
+          <dt>Elapsed</dt>
+          <dd>{{ time() }}</dd>
+        </div>
+        <div>
+          <dt>Pages per second</dt>
+          <dd>{{ rate() }}</dd>
+        </div>
+      </dl>
+    </section>
 
-  <div *ngIf="loading && (links?.length ?? 0) === 0" class="loading-message">
-    <p>Initializing engine and gathering intelligence...</p>
-  </div>
+    <section class="work" aria-label="Scan results">
+      <div class="tabs" role="tablist" aria-label="Result views" (keydown)="onTabKey($event)">
+        @for (t of tabs; track t.id) {
+          <button
+            type="button"
+            role="tab"
+            class="tab"
+            [id]="'tab-' + t.id"
+            [attr.aria-selected]="tab() === t.id"
+            [attr.aria-controls]="'panel-' + t.id"
+            [attr.tabindex]="tab() === t.id ? 0 : -1"
+            (click)="tab.set(t.id)"
+          >
+            {{ t.label }}
+            @if (t.id === 'links') {
+              <span class="tab__count">{{ links().length }}</span>
+            }
+          </button>
+        }
+      </div>
+
+      <div class="panel" role="tabpanel" [id]="'panel-' + tab()" [attr.aria-labelledby]="'tab-' + tab()">
+        @switch (tab()) {
+          @case ('sitemap') {
+            @if (links().length) {
+              <app-sitemap-tree [root]="sitemap()" />
+            } @else {
+              <p class="empty">Waiting for the first page. The sitemap fills in as pages are crawled.</p>
+            }
+          }
+          @case ('links') {
+            <label class="sr-only" for="filter">Filter links</label>
+            <input
+              id="filter"
+              class="filter"
+              type="search"
+              placeholder="Filter by text in the URL"
+              autocomplete="off"
+              [value]="filter()"
+              (input)="filter.set($any($event.target).value)"
+            />
+            @if (shownLinks().length) {
+              <ul class="links">
+                @for (link of shownLinks(); track link) {
+                  <li><a [href]="link" target="_blank" rel="noopener noreferrer">{{ link }}</a></li>
+                }
+              </ul>
+              @if (matchingLinks().length > linkLimit) {
+                <p class="note">Showing the first {{ linkLimit }} of {{ matchingLinks().length }}. Narrow the filter or export to see all.</p>
+              }
+            } @else {
+              <p class="empty">{{ links().length ? 'No links match that filter.' : 'No links found yet.' }}</p>
+            }
+          }
+          @case ('recon') {
+            <app-recon-panel [intel]="status().intel" />
+          }
+        }
+      </div>
+    </section>
+  }
 </div>

@@ -1,0 +1,134 @@
+:host {
+  display: block;
+}
+
+.address {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 0 0 16px;
+}
+
+.address__label {
+  color: var(--slate);
+  font-size: 0.8125rem;
+}
+
+.address__value {
+  font: 400 1rem var(--font-mono);
+}
+
+.recon {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 16px;
+}
+
+.recon__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pick {
+  min-height: 38px;
+  padding: 0 12px;
+  text-align: left;
+  font: 500 0.875rem var(--font-sans);
+  color: var(--slate);
+  background: transparent;
+  border: 0;
+  border-left: 2px solid transparent;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  cursor: pointer;
+}
+
+.pick:hover {
+  background: var(--wash);
+}
+
+.pick[aria-pressed='true'] {
+  color: var(--ink);
+  background: var(--wash);
+  border-left-color: var(--teal);
+}
+
+.out {
+  min-width: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.out__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 6px 6px 14px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.out__title {
+  font-size: 0.8125rem;
+  color: var(--slate);
+}
+
+.out__copy {
+  height: 30px;
+  padding: 0 12px;
+  font: 500 0.8125rem var(--font-sans);
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.out__copy:hover:not(:disabled) {
+  background: var(--wash);
+}
+
+.out__copy:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.out__body {
+  max-height: 420px;
+  margin: 0;
+  padding: 14px;
+  overflow: auto;
+  font: 400 0.8125rem/1.6 var(--font-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: var(--wash);
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+.out__wait {
+  margin: 0;
+  padding: 24px 14px;
+  color: var(--slate);
+}
+
+@media (max-width: 720px) {
+  .recon {
+    grid-template-columns: 1fr;
+  }
+
+  .recon__nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .pick {
+    border-left: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .pick[aria-pressed='true'] {
+    border-bottom-color: var(--teal);
+  }
+}
