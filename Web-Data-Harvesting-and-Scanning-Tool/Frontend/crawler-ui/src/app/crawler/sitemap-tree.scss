@@ -1,0 +1,87 @@
+:host {
+  display: block;
+  font: 400 0.875rem/1.4 var(--font-mono);
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The vertical guide shows nesting depth. */
+details > ul {
+  margin-left: 11px;
+  padding-left: 14px;
+  border-left: 1px solid var(--rule);
+}
+
+summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 8px 0 0;
+  list-style: none;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary:hover,
+.leaf:hover {
+  background: var(--wash);
+}
+
+.chev {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  position: relative;
+}
+
+.chev::before {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: 6px;
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid var(--slate);
+  border-bottom: 1.5px solid var(--slate);
+  transform: rotate(-45deg);
+  transition: transform 120ms ease;
+}
+
+details[open] > summary > .chev::before {
+  transform: rotate(45deg);
+  top: 5px;
+}
+
+.name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+a.name:hover {
+  color: var(--teal);
+  text-decoration: underline;
+}
+
+.count {
+  margin-left: auto;
+  padding-left: 12px;
+  color: var(--slate);
+  font-variant-numeric: tabular-nums;
+}
+
+.leaf {
+  display: block;
+  padding: 5px 8px 5px 30px;
+  border-radius: var(--radius);
+}

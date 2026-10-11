@@ -1,0 +1,59 @@
+.bar {
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+}
+
+.bar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1120px;
+  height: 56px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.brand__mark {
+  color: var(--teal);
+}
+
+.brand__name {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.api {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--slate);
+}
+
+.api__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--slate);
+}
+
+.api[data-state='true'] .api__dot {
+  background: var(--teal);
+}
+
+.api[data-state='false'] {
+  color: var(--brick);
+}
+
+.api[data-state='false'] .api__dot {
+  background: var(--brick);
+}

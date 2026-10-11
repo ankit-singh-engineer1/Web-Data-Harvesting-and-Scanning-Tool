@@ -1,1 +1,71 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --ground: #f2f4f6;
+  --paper: #ffffff;
+  --wash: #eaeef2;
+  --rule: #dce2e8;
+  --ink: #16222e;
+  --slate: #566677;
+  --teal: #0a7b83;
+  --teal-ink: #ffffff;
+  --amber: #9a5b00;
+  --brick: #b4322a;
+  --focus: 0 0 0 3px color-mix(in srgb, var(--teal) 30%, transparent);
+  --radius: 6px;
+  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #0e151b;
+    --paper: #151e26;
+    --wash: #1c2731;
+    --rule: #25313c;
+    --ink: #e7edf2;
+    --slate: #97a6b4;
+    --teal: #4cc4cc;
+    --teal-ink: #06262a;
+    --amber: #e6a740;
+    --brick: #f28075;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 400 0.9375rem/1.55 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
