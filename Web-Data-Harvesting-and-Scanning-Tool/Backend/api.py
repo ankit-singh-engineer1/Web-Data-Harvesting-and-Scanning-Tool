@@ -10,6 +10,36 @@ from whois import get_whois
 from queue import Queue
 import threading
 
+'''
+4 scenario can happen : 
+1. total success
+try runs fully --> (Optional else block runs) --> finally runs.
+
+2. Caught Exception
+try fails midway --> Matching except block runs --> finally runs.
+
+3. Uncaught Exception
+try fails with an exception that does not match any except block --> finally runs --> Program crashes/propagates the exception.
+
+4. The return, break, or continue Interruption
+try or except hits a return statement --> finally runs --> The function actually returns.
+
+try:
+    # Code that might fail
+    data = fetch_url()
+except TimeoutError:
+    # Runs ONLY if a TimeoutError occurs
+    print("Timed out!")
+else:
+    # Runs ONLY if the try block succeeds with ZERO exceptions
+    print("Successfully fetched data!")
+finally:
+    # ALWAYS runs no matter what happened above
+    print("Cleaning up resources...")
+
+'''
+
+
 app = FastAPI()
 
 app.add_middleware(
