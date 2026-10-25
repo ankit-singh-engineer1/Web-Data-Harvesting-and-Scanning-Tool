@@ -84,11 +84,11 @@ npm start
 
 ### 2. Backend Deployment
 ```bash
-cd backend
+cd Web-Data-Harvesting-and-Scanning-Tool/Backend
 python -m venv venv
 # Activate environment
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install fastapi uvicorn
+pip install -r requirements.txt
 uvicorn api:app --reload
 ```
 ---
@@ -96,4 +96,3 @@ uvicorn api:app --reload
 ## Comparison with Existing Tools
 <img width="830" height="710" alt="image" src="https://github.com/user-attachments/assets/b19d1b60-89f3-45fb-a142-5f2d548237f2" />
 <img width="829" height="553" alt="image" src="https://github.com/user-attachments/assets/646e15a0-302e-4ed3-bcee-e63a29405583" />
-
